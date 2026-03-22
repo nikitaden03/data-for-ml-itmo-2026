@@ -1,0 +1,158 @@
+{
+  "dataset_name": "perfumes_merged",
+  "n_rows": 23800,
+  "n_cols": 18,
+  "target_col": "rating_value",
+  "missing_counts": {
+    "country": 40,
+    "gender": 23,
+    "year": 2009,
+    "middle": 5,
+    "base": 5,
+    "perfumer2": 22483,
+    "mainaccord1": 40,
+    "mainaccord2": 53,
+    "mainaccord3": 150,
+    "mainaccord4": 420,
+    "mainaccord5": 1002
+  },
+  "missing_pct": {
+    "country": 0.17,
+    "gender": 0.1,
+    "year": 8.44,
+    "middle": 0.02,
+    "base": 0.02,
+    "perfumer2": 94.47,
+    "mainaccord1": 0.17,
+    "mainaccord2": 0.22,
+    "mainaccord3": 0.63,
+    "mainaccord4": 1.76,
+    "mainaccord5": 4.21
+  },
+  "n_duplicates": 0,
+  "duplicate_pct": 0.0,
+  "outliers_iqr": {
+    "rating_count": 3035,
+    "year": 1331
+  },
+  "outliers_zscore": {
+    "rating_count": 394,
+    "year": 317
+  },
+  "target_distribution": {
+    "mean": 3.9613,
+    "std": 0.2776,
+    "min": 1.42,
+    "max": 4.93,
+    "median": 3.97,
+    "skewness": -0.4612
+  },
+  "imbalance_ratio": null,
+  "issues": [
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "country",
+      "count": 40,
+      "percentage": 0.17,
+      "description": "Пропущено 40 значений (0.2%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "gender",
+      "count": 23,
+      "percentage": 0.1,
+      "description": "Пропущено 23 значений (0.1%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "year",
+      "count": 2009,
+      "percentage": 8.44,
+      "description": "Пропущено 2009 значений (8.4%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "middle",
+      "count": 5,
+      "percentage": 0.02,
+      "description": "Пропущено 5 значений (0.0%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "base",
+      "count": 5,
+      "percentage": 0.02,
+      "description": "Пропущено 5 значений (0.0%)"
+    },
+    {
+      "type": "missing",
+      "severity": "critical",
+      "column": "perfumer2",
+      "count": 22483,
+      "percentage": 94.47,
+      "description": "Пропущено 22483 значений (94.5%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "mainaccord1",
+      "count": 40,
+      "percentage": 0.17,
+      "description": "Пропущено 40 значений (0.2%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "mainaccord2",
+      "count": 53,
+      "percentage": 0.22,
+      "description": "Пропущено 53 значений (0.2%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "mainaccord3",
+      "count": 150,
+      "percentage": 0.63,
+      "description": "Пропущено 150 значений (0.6%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "mainaccord4",
+      "count": 420,
+      "percentage": 1.76,
+      "description": "Пропущено 420 значений (1.8%)"
+    },
+    {
+      "type": "missing",
+      "severity": "low",
+      "column": "mainaccord5",
+      "count": 1002,
+      "percentage": 4.21,
+      "description": "Пропущено 1002 значений (4.2%)"
+    },
+    {
+      "type": "outlier",
+      "severity": "high",
+      "column": "rating_count",
+      "count": 3035,
+      "percentage": 12.75,
+      "description": "IQR: 3035 выбросов (12.8%), Z-score: 394"
+    },
+    {
+      "type": "outlier",
+      "severity": "medium",
+      "column": "year",
+      "count": 1331,
+      "percentage": 6.11,
+      "description": "IQR: 1331 выбросов (6.1%), Z-score: 317"
+    }
+  ],
+  "quality_score": 52.5
+}

@@ -1,0 +1,66 @@
+{
+  "recommended_strategy": "strategy_a",
+  "recommendation_reasons": [
+    "Потеря только 0.63% строк vs 8.99% у стратегии B",
+    "NaN в year/mainaccord4-5 семантически осмысленны для tree-based моделей",
+    "Quality Score 85.5/100 — отличный результат"
+  ],
+  "original": {
+    "rows": 23800,
+    "cols": 18,
+    "quality_score": 52.5,
+    "missing_total": 26230
+  },
+  "strategy_a": {
+    "rows": 23650,
+    "cols": 18,
+    "quality_score": 85.5,
+    "data_loss_pct": 0.63,
+    "missing_total": 3112
+  },
+  "strategy_b": {
+    "rows": 21660,
+    "cols": 18,
+    "quality_score": 88.5,
+    "data_loss_pct": 8.99,
+    "missing_total": 997
+  },
+  "ks_tests": {
+    "rating_count": {
+      "strategy_a": {
+        "ks_stat": 0.001,
+        "p_value": 1.0,
+        "changed": false
+      },
+      "strategy_b": {
+        "ks_stat": 0.0207,
+        "p_value": 0.0001,
+        "changed": true
+      }
+    },
+    "rating_value": {
+      "strategy_a": {
+        "ks_stat": 0.0004,
+        "p_value": 1.0,
+        "changed": false
+      },
+      "strategy_b": {
+        "ks_stat": 0.0015,
+        "p_value": 1.0,
+        "changed": false
+      }
+    },
+    "year": {
+      "strategy_a": {
+        "ks_stat": 0.0029,
+        "p_value": 1.0,
+        "changed": false
+      },
+      "strategy_b": {
+        "ks_stat": 0.0029,
+        "p_value": 1.0,
+        "changed": false
+      }
+    }
+  }
+}
