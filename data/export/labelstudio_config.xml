@@ -1,0 +1,12 @@
+<View>
+  <Header value="Понравился ли рецензенту этот парфюм?"/>
+  <Header value="liked = явный позитив: хвалит, рекомендует, носит с удовольствием"/>
+  <Header value="not_liked = негатив, нейтрально или противоречиво — если сомневаешься, ставь not_liked"/>
+  <Text name="text" value="$text"/>
+  <Header value="Perfume: $perfume_name | Brand: $brand | Rating: $rating"/>
+  <Header value="Notes: $top_notes / $middle_notes / $base_notes"/>
+  <Choices name="label" toName="text" choice="single" showInline="true">
+    <Choice value="liked"/>
+    <Choice value="not_liked"/>
+  </Choices>
+</View>
