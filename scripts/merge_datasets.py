@@ -1,85 +1,76 @@
 """
-Объединение датасетов:
-- fragrantica.csv (Kaggle, 24k строк)
-- tom_ford_creed.csv (scraped, 40 строк)
-Стратегия: вертикальный CONCAT
+Merge Russian Fragrantica corpus (reviews) with scraped Fragrantica notes/ratings.
+Join key: perfume name found at start of corpus 'product' column.
 """
 
+import sys
 import pandas as pd
-import sys, io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-from pathlib import Path
+sys.stdout.reconfigure(encoding="utf-8")
 
-DATA_DIR = Path("data/raw")
-OUT_DIR = Path("data/processed")
-OUT_DIR.mkdir(parents=True, exist_ok=True)
+# --- Load ---
+corpus = pd.read_csv("data/raw/fragrantica_corpus.csv", sep=";", encoding="utf-8-sig", on_bad_lines="skip")
+scraped = pd.read_csv("data/raw/fragrantica_scraped.csv", encoding="utf-8-sig")
 
+print(f"Corpus shape: {corpus.shape}")
+print(f"Scraped shape: {scraped.shape}")
 
-# ── Загрузка ──────────────────────────────────────────────────────────────────
-df_kaggle = pd.read_csv(DATA_DIR / "fragrantica.csv")
-df_scraped = pd.read_csv(DATA_DIR / "tom_ford_creed.csv")
+# --- Build join key ---
+# corpus.product looks like: "Chanel No 5 Eau de Parfum Chanel для женщин"
+# scraped.name looks like:   "Chanel No 5 Eau de Parfum"
+# Strategy: for each corpus row, check which scraped name appears at the start of product
 
-print(f"Kaggle:   {df_kaggle.shape}")
-print(f"Scraped:  {df_scraped.shape}")
+scraped_names = scraped["name"].tolist()
 
+def find_perfume_name(product_str):
+    product_lower = product_str.lower()
+    best = None
+    best_len = 0
+    for name in scraped_names:
+        if product_lower.startswith(name.lower()) and len(name) > best_len:
+            best = name
+            best_len = len(name)
+    return best
 
-# ── Нормализация brand ────────────────────────────────────────────────────────
-# Kaggle хранит lowercase; приведём к Title Case для обоих
-def normalize_brand(s: pd.Series) -> pd.Series:
-    return s.str.strip().str.title()
+corpus["perfume_name"] = corpus["product"].apply(find_perfume_name)
 
-df_kaggle["brand"]   = normalize_brand(df_kaggle["brand"])
-df_scraped["brand"]  = normalize_brand(df_scraped["brand"])
+print("\nMatching stats:")
+print(corpus["perfume_name"].value_counts(dropna=False))
+unmatched = corpus[corpus["perfume_name"].isna()]
+if len(unmatched) > 0:
+    print(f"\nUnmatched products ({len(unmatched)}):")
+    print(unmatched["product"].unique())
 
+# --- Merge ---
+merged = corpus.merge(
+    scraped.rename(columns={"name": "perfume_name"}),
+    on="perfume_name",
+    how="left"
+)
 
-# ── Нормализация rating_value → float ────────────────────────────────────────
-def to_float_rating(s: pd.Series) -> pd.Series:
-    return (
-        s.astype(str)
-         .str.replace(",", ".", regex=False)
-         .str.extract(r"([\d.]+)")[0]
-         .astype(float)
-    )
+# Clean up columns
+merged = merged.rename(columns={"text": "review_text", "date": "review_date", "user": "reviewer"})
+merged = merged.drop(columns=["no", "product", "url"], errors="ignore")
+merged = merged[["perfume_name", "brand", "rating", "votes",
+                 "top_notes", "middle_notes", "base_notes",
+                 "reviewer", "review_date", "review_text"]]
 
-df_kaggle["rating_value"]  = to_float_rating(df_kaggle["rating_value"])
-df_scraped["rating_value"] = to_float_rating(df_scraped["rating_value"])
+print(f"\nMerged shape: {merged.shape}")
+print(f"Columns: {merged.columns.tolist()}")
+print("\nSample:")
+print(merged.head(3)[["perfume_name", "brand", "rating", "top_notes", "review_text"]].to_string())
 
+# --- Save ---
+merged.to_csv("data/processed/perfumes_merged.csv", index=False, encoding="utf-8-sig")
+print("\nSaved to data/processed/perfumes_merged.csv")
 
-# ── Убираем Creed из Kaggle (заменяем свежескраченными) ───────────────────────
-scraped_brands = df_scraped["brand"].unique().tolist()
-print(f"\nScraped brands: {scraped_brands}")
-
-df_kaggle_clean = df_kaggle[~df_kaggle["brand"].isin(scraped_brands)].copy()
-print(f"Kaggle after removing scraped brands: {df_kaggle_clean.shape}")
-
-
-# ── Concat ────────────────────────────────────────────────────────────────────
-df = pd.concat([df_kaggle_clean, df_scraped], axis=0, ignore_index=True)
-
-print(f"\nAfter concat: {df.shape}")
-print(f"Brands (top 10):\n{df['brand'].value_counts().head(10).to_string()}")
-
-
-# ── Диагностика ───────────────────────────────────────────────────────────────
-print(f"\nNulls:")
-print(df.isna().sum().to_string())
-
-dups = df.duplicated(subset=["perfume", "brand"]).sum()
-print(f"\nДублей (perfume+brand): {dups}")
-if dups:
-    df = df.drop_duplicates(subset=["perfume", "brand"], keep="last")
-    print(f"После дедупликации: {df.shape}")
-
-
-# ── Сохранение ────────────────────────────────────────────────────────────────
-output_path = OUT_DIR / "perfumes_merged.csv"
-df.to_csv(output_path, index=False, encoding="utf-8")
-
-print(f"\n{'='*50}")
-print(f"Saved: {output_path}")
-print(f"Final shape: {df.shape}")
-print(f"\nTom Ford sample:")
-print(df[df["brand"] == "Tom Ford"][["perfume", "rating_value", "top"]].head(3).to_string())
-print(f"\nCreed sample:")
-print(df[df["brand"] == "Creed"][["perfume", "rating_value", "top"]].head(3).to_string())
+# Summary stats
+print("\n=== Summary ===")
+per_perfume = merged.groupby("perfume_name").agg(
+    brand=("brand", "first"),
+    rating=("rating", "first"),
+    votes=("votes", "first"),
+    n_reviews=("review_text", "count"),
+    top_notes=("top_notes", "first"),
+).reset_index()
+print(per_perfume.to_string())

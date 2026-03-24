@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Chanel No 5 Eau de Parfum",
+    "brand": "Chanel",
+    "url": "https://www.fragrantica.com/perfume/Chanel/Chanel-No-5-Eau-de-Parfum-40069.html",
+    "rating": 3.6,
+    "votes": 11565,
+    "top_notes": [
+      "Aldehydes",
+      "Ylang-Ylang",
+      "Neroli",
+      "Bergamot",
+      "Peach"
+    ],
+    "middle_notes": [
+      "Iris",
+      "Jasmine",
+      "Rose",
+      "Lily-of-the-Valley"
+    ],
+    "base_notes": [
+      "Sandalwood",
+      "Oakmoss",
+      "Vanilla",
+      "Patchouli",
+      "Vetiver"
+    ]
+  },
+  {
+    "name": "By the Fireplace",
+    "brand": "Maison Margiela",
+    "url": "https://www.fragrantica.com/perfume/Maison-Martin-Margiela/By-the-Fireplace-31623.html",
+    "rating": 4.21,
+    "votes": 24439,
+    "top_notes": [
+      "Cloves",
+      "Pink Pepper",
+      "Orange Blossom"
+    ],
+    "middle_notes": [
+      "Chestnut",
+      "Guaiac Wood",
+      "Juniper"
+    ],
+    "base_notes": [
+      "Vanilla",
+      "Peru Balsam",
+      "Cashmeran"
+    ]
+  },
+  {
+    "name": "Cuoium",
+    "brand": "Orto Parisi",
+    "url": "https://www.fragrantica.com/perfume/Orto-Parisi/Cuoium-69923.html",
+    "rating": 3.96,
+    "votes": 3232,
+    "top_notes": [
+      "Animal notes",
+      "Woody Notes"
+    ],
+    "middle_notes": [
+      "Violet"
+    ],
+    "base_notes": [
+      "Leather",
+      "Incense",
+      "Cade oil",
+      "Cedar",
+      "Labdanum",
+      "Patchouli",
+      "Vanilla"
+    ]
+  },
+  {
+    "name": "Dioressence",
+    "brand": "Dior",
+    "url": "https://www.fragrantica.com/perfume/Dior/Les-Creations-de-Monsieur-Dior-Dioressence-7371.html",
+    "rating": 4.11,
+    "votes": 484,
+    "top_notes": [
+      "Geranium"
+    ],
+    "middle_notes": [
+      "Cinnamon"
+    ],
+    "base_notes": [
+      "Patchouli"
+    ]
+  },
+  {
+    "name": "Black Pearls",
+    "brand": "Elizabeth Taylor",
+    "url": "https://www.fragrantica.com/perfume/Elizabeth-Taylor/Black-Pearls-1702.html",
+    "rating": 3.82,
+    "votes": 779,
+    "top_notes": [
+      "Peach",
+      "Gardenia",
+      "Bergamot"
+    ],
+    "middle_notes": [
+      "White Rose",
+      "Lotus",
+      "Water Lily"
+    ],
+    "base_notes": [
+      "Sandalwood",
+      "Amber",
+      "Musk"
+    ]
+  },
+  {
+    "name": "Acqua di Parma Colonia",
+    "brand": "Acqua di Parma",
+    "url": "https://www.fragrantica.com/perfume/Acqua-di-Parma/Acqua-di-Parma-Colonia-Pura-45876.html",
+    "rating": 4.01,
+    "votes": 1498,
+    "top_notes": [
+      "Ozonic notes",
+      "Bergamot",
+      "Orange",
+      "Petitgrain"
+    ],
+    "middle_notes": [
+      "Narcissus",
+      "Jasmine Sambac",
+      "Coriander"
+    ],
+    "base_notes": [
+      "White Musk",
+      "Cedar",
+      "Patchouli"
+    ]
+  },
+  {
+    "name": "The One Gentleman",
+    "brand": "Dolce Gabbana",
+    "url": "https://www.fragrantica.com/perfume/Dolce-Gabbana/The-One-Gentleman-8907.html",
+    "rating": 3.92,
+    "votes": 1607,
+    "top_notes": [
+      "Pepper"
+    ],
+    "middle_notes": [
+      "Lavender",
+      "Cardamom",
+      "Watercress"
+    ],
+    "base_notes": [
+      "Vanille",
+      "Patchouli"
+    ]
+  },
+  {
+    "name": "Aspen For Men",
+    "brand": "Coty",
+    "url": "https://www.fragrantica.com/perfume/Coty/Aspen-For-Men-17326.html",
+    "rating": 3.92,
+    "votes": 1842,
+    "top_notes": [
+      "Green Notes",
+      "Bergamot",
+      "Lemon"
+    ],
+    "middle_notes": [
+      "Lavender",
+      "Juniper",
+      "Geranium",
+      "Coriander",
+      "Cyclamen",
+      "Orange Blossom",
+      "Jasmine"
+    ],
+    "base_notes": [
+      "Balsam Fir",
+      "Cedar",
+      "Oakmoss",
+      "Musk",
+      "Ambergris"
+    ]
+  }
+]

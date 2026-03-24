@@ -1,0 +1,42 @@
+{
+  "quality_score": 30.0,
+  "n_rows": 931,
+  "n_cols": 11,
+  "total_penalty": 70.0,
+  "issues": [
+    {
+      "type": "encoding_corruption",
+      "severity": "critical",
+      "count": 21,
+      "pct": 2.26,
+      "description": "Текст отзыва содержит символы замены Unicode (\\ufffd) — данные нечитаемы для NLP",
+      "penalty": 30
+    },
+    {
+      "type": "short_review",
+      "severity": "medium",
+      "count": 27,
+      "pct": 2.9,
+      "description": "Отзыв слишком короткий (<50 символов) — мало информации для NLP",
+      "penalty": 15
+    },
+    {
+      "type": "duplicate_reviewer",
+      "severity": "high",
+      "count": 151,
+      "pct": 16.22,
+      "description": "Один рецензент оставил несколько отзывов — риск утечки данных при train/test split",
+      "penalty": 15
+    },
+    {
+      "type": "perfume_level_rating",
+      "severity": "high",
+      "count": 8,
+      "pct": 100.0,
+      "description": "'rating' — агрегат уровня парфюма, а не оценка отдельного отзыва; прямое использование как таргета приведёт к утечке",
+      "penalty": 10.0
+    }
+  ],
+  "source_file": "data/processed/perfumes_merged.csv",
+  "task": "sentiment_classification"
+}

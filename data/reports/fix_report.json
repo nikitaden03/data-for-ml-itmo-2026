@@ -1,41 +1,34 @@
 {
-  "original": {
-    "rows": 23800,
-    "cols": 18,
-    "quality_score": 52.5
-  },
+  "original_shape": [
+    931,
+    10
+  ],
+  "decisions": [
+    {
+      "issue": "encoding_corruption",
+      "action": "drop",
+      "rows_dropped": 21
+    },
+    {
+      "issue": "short_review",
+      "action": "drop",
+      "rows_dropped": 27
+    }
+  ],
   "strategy_a": {
-    "name": "Консервативная",
-    "rows": 23650,
-    "cols": 18,
-    "quality_score": 85.5,
-    "data_loss_pct": 0.63,
-    "log": [
-      "[dup] drop_exact: удалено 0 полных дубликатов",
-      "[col] perfumer2: удалён столбец (94.5% missing)",
-      "[feat] rating_count: создан log_rating_count = log1p(rating_count)",
-      "[out] year: clip [1920, 2024], затронуто 69 значений",
-      "[mis] year: оставляем 2009 NaN как есть",
-      "[mis] mainaccord1-3: drop_rows 150 строк с NaN",
-      "[mis] mainaccord4-5: NaN оставлены (структурные пропуски)",
-      "\n=== ИТОГО [A]: 23800 → 23650 строк (потеря 0.6%) ==="
-    ]
+    "name": "conservative",
+    "description": "Drop encoding/short + deduplicate reviewers (keep longest review)",
+    "rows": 807,
+    "loss_pct": 13.32,
+    "quality_score": 90.0,
+    "file": "data/cleaned/strategy_a.csv"
   },
   "strategy_b": {
-    "name": "Агрессивная",
-    "rows": 21660,
-    "cols": 18,
-    "quality_score": 88.5,
-    "data_loss_pct": 8.99,
-    "log": [
-      "[dup] drop_exact: удалено 0 полных дубликатов",
-      "[col] perfumer2: удалён столбец (94.5% missing)",
-      "[out] log_rating_count: clip_iqr, обрезано 306 значений",
-      "[out] year: clip [1920, 2024], затронуто 69 значений",
-      "[mis] year: drop_rows 2009 строк с NaN",
-      "[mis] mainaccord1-3: drop_rows 131 строк с NaN",
-      "[mis] mainaccord4-5: NaN оставлены (структурные пропуски)",
-      "\n=== ИТОГО [B]: 23800 → 21660 строк (потеря 9.0%) ==="
-    ]
+    "name": "soft",
+    "description": "Drop encoding/short + flag duplicate reviewers",
+    "rows": 883,
+    "loss_pct": 5.16,
+    "quality_score": 75.0,
+    "file": "data/cleaned/strategy_b.csv"
   }
 }
