@@ -120,7 +120,7 @@ Validation: ✅
 
 ### Фаза 5: README
 
-Напиши `docs/labeling_README.md` — документация всего пайплайна.
+Напиши `readme/README_labeling.md` — документация всего пайплайна.
 
 Обязательные секции:
 - **Задача** — что размечается и зачем
@@ -142,7 +142,7 @@ Validation: ✅
   📁 data/export/labelstudio_config.xml
   📁 data/reports/quality_metrics.json
   📁 docs/annotation_spec.md
-  📁 docs/labeling_README.md
+  📁 readme/README_labeling.md
   📓 notebooks/01_auto_label.ipynb
   📓 notebooks/02_annotation_spec.ipynb (если создан)
   📓 notebooks/03_check_quality.ipynb

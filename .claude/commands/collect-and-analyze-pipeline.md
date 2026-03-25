@@ -67,7 +67,7 @@ description: Полный пайплайн сбора и анализа данн
 Спроси фокус анализа или используй общий.
 
 ### Шаг 6: README
-Создай `agents/data_collection_agent/README.md` со следующими разделами:
+Создай `readme/README_collect_and_analyze.md` со следующими разделами:
 - **Задача** — что собирали и зачем
 - **Что сделали** — источники, файлы, скрипты, размеры датасетов
 - **Структура данных** — таблица колонок с описанием
@@ -82,7 +82,7 @@ description: Полный пайплайн сбора и анализа данн
 - API/Scraping: {file2}
 - Merged: {file3}
 - EDA: notebooks/{notebook}
-- README: agents/data_collection_agent/README.md
+- README: readme/README_collect_and_analyze.md
 
 Ключевые находки:
 1. ...

@@ -1,0 +1,89 @@
+{
+  "config": {
+    "dataset": "C:\\Users\\denni\\Desktop\\git_repos\\data-for-ml-itmo-2026\\data\\labeled\\strategy_a_labeled.csv",
+    "target": "label_binary",
+    "n_init": 50,
+    "n_iterations": 5,
+    "batch_size": 10,
+    "random_state": 42,
+    "test_size": 162
+  },
+  "results": {
+    "entropy": [
+      {
+        "iteration": 0,
+        "n_labeled": 50,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      },
+      {
+        "iteration": 1,
+        "n_labeled": 60,
+        "accuracy": 0.5679,
+        "f1": 0.375
+      },
+      {
+        "iteration": 2,
+        "n_labeled": 70,
+        "accuracy": 0.5802,
+        "f1": 0.4045
+      },
+      {
+        "iteration": 3,
+        "n_labeled": 80,
+        "accuracy": 0.6111,
+        "f1": 0.5982
+      },
+      {
+        "iteration": 4,
+        "n_labeled": 90,
+        "accuracy": 0.6296,
+        "f1": 0.5707
+      },
+      {
+        "iteration": 5,
+        "n_labeled": 100,
+        "accuracy": 0.6111,
+        "f1": 0.5516
+      }
+    ],
+    "random": [
+      {
+        "iteration": 0,
+        "n_labeled": 50,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      },
+      {
+        "iteration": 1,
+        "n_labeled": 60,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      },
+      {
+        "iteration": 2,
+        "n_labeled": 70,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      },
+      {
+        "iteration": 3,
+        "n_labeled": 80,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      },
+      {
+        "iteration": 4,
+        "n_labeled": 90,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      },
+      {
+        "iteration": 5,
+        "n_labeled": 100,
+        "accuracy": 0.5741,
+        "f1": 0.3647
+      }
+    ]
+  }
+}

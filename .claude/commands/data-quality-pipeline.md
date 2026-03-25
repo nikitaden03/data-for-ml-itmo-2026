@@ -119,7 +119,7 @@ Strategy B ({name}):
 
 ### Фаза 4: ЛЕТОПИСЕЦ (readme)
 
-Напиши `agents/data_quality_agent/README.md` — документацию того что было сделано в этом запуске.
+Напиши `readme/README_data_quality.md` — документацию того что было сделано в этом запуске.
 
 README должен содержать:
 
@@ -147,7 +147,7 @@ README должен содержать:
 📋 ФАЗА 4: ЛЕТОПИСЕЦ — ЗАВЕРШЕНА
 ═══════════════════════════════════════
 
-README: agents/data_quality_agent/README.md
+README: readme/README_data_quality.md
 ```
 
 ## Критические правила
