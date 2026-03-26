@@ -1,234 +1,217 @@
 """
-Active Learning Agent — strategy_a dataset
-Target: label_binary (liked / not_liked)
-Features: TF-IDF on review_text
-Strategies: entropy sampling vs random baseline
-"""
+Active Learning Agent: Entropy vs Random sampling.
+Standalone script — can be run independently.
 
-import io
+Usage:
+    python agents/al_agent.py
+"""
 import sys
 import json
 import numpy as np
-
-# Fix Windows console encoding only when running as a script (not in Jupyter)
-if hasattr(sys.stdout, 'buffer'):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-if hasattr(sys.stderr, 'buffer'):
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 import pandas as pd
 from pathlib import Path
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, f1_score
-from scipy.stats import entropy as scipy_entropy
+from sklearn.metrics import f1_score, accuracy_score, confusion_matrix
 
-# ─── Config ───────────────────────────────────────────────────────────────────
-RANDOM_STATE   = 42
-DATA_PATH      = Path(__file__).parent.parent / "data/labeled/strategy_a_labeled.csv"
-REPORT_PATH    = Path(__file__).parent.parent / "data/reports/al_results.json"
-TARGET_COL     = "label_binary"
-TEXT_COL       = "review_text"
-N_INIT         = 50
-N_ITERATIONS   = 5
-BATCH_SIZE     = 10
-TEST_SIZE      = 0.20
-STRATEGIES     = ["entropy", "random"]
+RANDOM_STATE = 42
+TEST_SIZE = 0.20
+INITIAL_LABELED = 200
+BATCH_SIZE = 100
+N_ITERATIONS = 10
+DATA_PATH = "data/labeled/strategy_a_labeled.csv"
+OUTPUT_PATH = "data/reports/al_results.json"
 
 
-# ─── Data loading & splitting ─────────────────────────────────────────────────
-def load_and_split(data_path=DATA_PATH):
-    df = pd.read_csv(data_path)
-    df = df[[TEXT_COL, TARGET_COL]].dropna().reset_index(drop=True)
+# ─── Data preparation ─────────────────────────────────────────────────────────
 
-    # 1. Hold-out test set (20%, stratified, fixed)
-    idx_trainpool, idx_test = train_test_split(
-        df.index, test_size=TEST_SIZE, stratify=df[TARGET_COL],
+def load_data(path: str):
+    df = pd.read_csv(path, encoding="utf-8-sig")
+    df["text"] = df["body"].fillna("").astype(str)
+    X = df["text"].values
+    y = df["positive_market_impact"].astype(int).values
+    return X, y
+
+
+def prepare_splits(X, y):
+    # Test split (fixed, stratified)
+    idx = np.arange(len(X))
+    idx_trainpool, idx_test, _, _ = train_test_split(
+        idx, y, test_size=TEST_SIZE, stratify=y, random_state=RANDOM_STATE
+    )
+    # Initial labeled (stratified from trainpool)
+    idx_init, idx_pool, _, _ = train_test_split(
+        idx_trainpool, y[idx_trainpool],
+        train_size=INITIAL_LABELED,
+        stratify=y[idx_trainpool],
         random_state=RANDOM_STATE
     )
+    return idx_test, idx_init, idx_pool
 
-    # 2. Initial labeled (N_INIT from trainpool, stratified)
-    df_trainpool = df.loc[idx_trainpool].reset_index(drop=True)
-    idx_init, idx_pool = train_test_split(
-        df_trainpool.index, train_size=N_INIT,
-        stratify=df_trainpool[TARGET_COL],
-        random_state=RANDOM_STATE
+
+# ─── Vectorizer ───────────────────────────────────────────────────────────────
+
+def build_vectorizer(X_train):
+    vec = TfidfVectorizer(
+        max_features=10_000,
+        ngram_range=(1, 2),
+        min_df=2,
+        sublinear_tf=True
     )
-
-    test_df    = df.loc[idx_test].reset_index(drop=True)
-    init_df    = df_trainpool.loc[idx_init].reset_index(drop=True)
-    pool_df    = df_trainpool.loc[idx_pool].reset_index(drop=True)
-
-    return init_df, pool_df, test_df
-
-
-# ─── Feature extraction ───────────────────────────────────────────────────────
-def build_vectorizer(texts):
-    vec = TfidfVectorizer(max_features=5000, ngram_range=(1, 2),
-                          sublinear_tf=True)
-    vec.fit(texts)
+    vec.fit(X_train)
     return vec
 
 
-# ─── Sampling strategies ──────────────────────────────────────────────────────
-def query_entropy(model, vec, pool_df, batch_size):
-    X_pool = vec.transform(pool_df[TEXT_COL])
-    proba  = model.predict_proba(X_pool)
-    ent    = scipy_entropy(proba, axis=1)          # higher = more uncertain
-    top_idx = np.argsort(ent)[::-1][:batch_size]
-    return top_idx
+# ─── Model ────────────────────────────────────────────────────────────────────
+
+def fit_model(vec, X_labeled, y_labeled):
+    X_vec = vec.transform(X_labeled)
+    clf = LogisticRegression(max_iter=1000, random_state=RANDOM_STATE, C=1.0)
+    clf.fit(X_vec, y_labeled)
+    return clf
 
 
-def query_random(pool_df, batch_size, rng):
-    return rng.choice(len(pool_df), size=batch_size, replace=False)
-
-
-# ─── Evaluation ───────────────────────────────────────────────────────────────
-def evaluate(model, vec, df):
-    X = vec.transform(df[TEXT_COL])
-    y = df[TARGET_COL]
-    preds = model.predict(X)
+def evaluate(vec, clf, X_test, y_test):
+    X_vec = vec.transform(X_test)
+    y_pred = clf.predict(X_vec)
     return {
-        "accuracy": round(accuracy_score(y, preds), 4),
-        "f1":       round(f1_score(y, preds, average="macro"), 4),
+        "accuracy": round(float(accuracy_score(y_test, y_pred)), 4),
+        "f1": round(float(f1_score(y_test, y_pred, average="macro")), 4),
+        "confusion_matrix": confusion_matrix(y_test, y_pred).tolist()
     }
 
 
-# ─── Single AL cycle ──────────────────────────────────────────────────────────
-def run_al_cycle(strategy, init_df, pool_df, test_df, verbose=True):
-    labeled_df = init_df.copy()
-    pool_df    = pool_df.copy()
-    rng        = np.random.default_rng(RANDOM_STATE)
+# ─── Query strategies ─────────────────────────────────────────────────────────
 
-    # Fit vectorizer on all available text (labeled + pool) — realistic scenario
-    all_texts = pd.concat([labeled_df[TEXT_COL], pool_df[TEXT_COL]])
-    vec = build_vectorizer(all_texts)
+def query_entropy(vec, clf, X_pool, batch_size: int) -> np.ndarray:
+    """Select batch_size samples with highest entropy."""
+    proba = clf.predict_proba(vec.transform(X_pool))
+    # Entropy: -sum(p * log(p))
+    entropy = -np.sum(proba * np.log(proba + 1e-10), axis=1)
+    return np.argsort(entropy)[-batch_size:]
 
-    results = []
+
+def query_random(pool_size: int, batch_size: int, rng: np.random.Generator) -> np.ndarray:
+    """Select batch_size random samples."""
+    return rng.choice(pool_size, size=batch_size, replace=False)
+
+
+# ─── AL loop ──────────────────────────────────────────────────────────────────
+
+def run_al_loop(X, y, idx_test, idx_init, idx_pool, strategy: str, verbose: bool = True):
+    X_test, y_test = X[idx_test], y[idx_test]
+
+    labeled = list(idx_init.copy())
+    pool = list(idx_pool.copy())
+    rng = np.random.default_rng(RANDOM_STATE)
+
+    # Build vectorizer on all non-test data
+    all_train_idx = np.concatenate([idx_init, idx_pool])
+    vec = build_vectorizer(X[all_train_idx])
+
+    history = []
 
     for iteration in range(N_ITERATIONS + 1):
-        # Train
-        X_train = vec.transform(labeled_df[TEXT_COL])
-        y_train = labeled_df[TARGET_COL]
-        model   = LogisticRegression(max_iter=1000, random_state=RANDOM_STATE, C=1.0)
-        model.fit(X_train, y_train)
+        X_labeled = X[labeled]
+        y_labeled = y[labeled]
 
-        # Evaluate on test
-        metrics = evaluate(model, vec, test_df)
-        results.append({
-            "iteration":    iteration,
-            "n_labeled":    len(labeled_df),
-            "accuracy":     metrics["accuracy"],
-            "f1":           metrics["f1"],
-        })
+        clf = fit_model(vec, X_labeled, y_labeled)
+        metrics = evaluate(vec, clf, X_test, y_test)
+        metrics["n_labeled"] = len(labeled)
+        metrics["iteration"] = iteration
+        history.append(metrics)
 
         if verbose:
-            tag = f"Iteration {iteration}:"
-            action = f"fit на labeled ({len(labeled_df)})"
-            print(f"  {tag} {action} → accuracy={metrics['accuracy']}, F1={metrics['f1']}")
+            print(f"  iter {iteration:2d} | labeled={len(labeled):5d} | "
+                  f"acc={metrics['accuracy']:.4f} | f1={metrics['f1']:.4f}")
 
-        # Query next batch (skip on last iteration)
-        if iteration < N_ITERATIONS and len(pool_df) >= BATCH_SIZE:
-            if strategy == "entropy":
-                query_idx = query_entropy(model, vec, pool_df, BATCH_SIZE)
-            else:
-                query_idx = query_random(pool_df, BATCH_SIZE, rng)
+        if iteration == N_ITERATIONS:
+            break
 
-            new_samples = pool_df.iloc[query_idx]
-            labeled_df  = pd.concat([labeled_df, new_samples], ignore_index=True)
-            pool_df     = pool_df.drop(pool_df.index[query_idx]).reset_index(drop=True)
+        # Query
+        X_pool_arr = X[pool]
+        if strategy == "entropy":
+            chosen_local = query_entropy(vec, clf, X_pool_arr, BATCH_SIZE)
+        else:
+            chosen_local = query_random(len(pool), BATCH_SIZE, rng)
 
-    return results, model, vec
+        chosen_global = [pool[i] for i in chosen_local]
+        labeled.extend(chosen_global)
+        pool = [p for p in pool if p not in set(chosen_global)]
+
+    return history, clf, vec
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
+
 def main():
-    print("=" * 55)
-    print("  Active Learning Experiment")
-    print("  Dataset:    strategy_a  |  Target: label_binary")
-    print(f"  N_init={N_INIT}, iterations={N_ITERATIONS}, batch={BATCH_SIZE}")
-    print("=" * 55)
+    sys.stdout.reconfigure(encoding="utf-8")
+    print("Loading data...")
+    X, y = load_data(DATA_PATH)
+    print(f"  Total: {len(X)} samples | balance: {y.mean():.3f}")
 
-    init_df, pool_df, test_df = load_and_split()
+    print("Preparing splits...")
+    idx_test, idx_init, idx_pool = prepare_splits(X, y)
+    print(f"  Test: {len(idx_test)} | Init labeled: {len(idx_init)} | Pool: {len(idx_pool)}")
 
-    print(f"\n📊 Data split:")
-    print(f"   Test:           {len(test_df)} samples")
-    print(f"   Initial labeled:{len(init_df)} samples")
-    print(f"   Unlabeled pool: {len(pool_df)} samples")
-    print(f"   Class dist (init): {dict(init_df[TARGET_COL].value_counts())}")
+    print("\n=== ENTROPY STRATEGY ===")
+    entropy_history, entropy_clf, entropy_vec = run_al_loop(
+        X, y, idx_test, idx_init, idx_pool, strategy="entropy"
+    )
 
-    all_results = {}
+    print("\n=== RANDOM STRATEGY ===")
+    random_history, random_clf, random_vec = run_al_loop(
+        X, y, idx_test, idx_init, idx_pool, strategy="random"
+    )
 
-    for strategy in STRATEGIES:
-        print(f"\n{'═'*55}")
-        print(f"  Strategy: {strategy.upper()}")
-        print(f"{'═'*55}")
-        results, model, vec = run_al_cycle(
-            strategy, init_df, pool_df, test_df, verbose=True
-        )
-        all_results[strategy] = results
-
-        init_f1  = results[0]["f1"]
-        final_f1 = results[-1]["f1"]
-        print(f"\n  ✓ Final accuracy={results[-1]['accuracy']}, F1={final_f1}")
-        print(f"  ✓ Improvement: {init_f1} → {final_f1} (+{round(final_f1 - init_f1, 4)})")
-
-    # ── Comparison ──
-    print(f"\n{'═'*55}")
-    print("  COMPARISON")
-    print(f"{'═'*55}")
-    print(f"{'Iter':>5} {'n_labeled':>10}  {'entropy acc':>12} {'entropy F1':>10}  {'random acc':>11} {'random F1':>9}")
-    ent_res = all_results["entropy"]
-    rnd_res = all_results["random"]
-    for i in range(len(ent_res)):
-        print(
-            f"  {i:>3}  {ent_res[i]['n_labeled']:>9}   "
-            f"{ent_res[i]['accuracy']:>11}  {ent_res[i]['f1']:>9}   "
-            f"{rnd_res[i]['accuracy']:>10}  {rnd_res[i]['f1']:>8}"
-        )
-
-    # ── Savings ──
-    ent_final_f1 = ent_res[-1]["f1"]
-    rnd_final_f1 = rnd_res[-1]["f1"]
-    rnd_f1_values = [r["f1"] for r in rnd_res]
-    ent_f1_values = [r["f1"] for r in ent_res]
-
-    # Find how many samples entropy needs to match random's final F1
-    savings_samples = None
-    for r in ent_res:
-        if r["f1"] >= rnd_final_f1:
-            savings_samples = r["n_labeled"]
-            break
-
-    rnd_final_n = rnd_res[-1]["n_labeled"]
-
-    print(f"\n💰 Savings:")
-    if savings_samples:
-        pct = round((1 - savings_samples / rnd_final_n) * 100, 1)
-        print(f"   Entropy reaches Random's final F1={rnd_final_f1} at {savings_samples} samples")
-        print(f"   vs Random needing {rnd_final_n} samples ({pct}% savings)")
-    else:
-        print(f"   Entropy F1={ent_final_f1}  vs  Random F1={rnd_final_f1}")
-        diff = round(ent_final_f1 - rnd_final_f1, 4)
-        print(f"   At equal budget ({rnd_final_n} samples): Entropy {'beats' if diff>0 else 'trails'} Random by {abs(diff)}")
-
-    # ── Save results ──
-    report = {
+    # Build results
+    results = {
         "config": {
-            "dataset": str(DATA_PATH),
-            "target": TARGET_COL,
-            "n_init": N_INIT,
-            "n_iterations": N_ITERATIONS,
-            "batch_size": BATCH_SIZE,
             "random_state": RANDOM_STATE,
-            "test_size": len(test_df),
+            "test_size": TEST_SIZE,
+            "initial_labeled": INITIAL_LABELED,
+            "batch_size": BATCH_SIZE,
+            "n_iterations": N_ITERATIONS,
+            "model": "LogisticRegression",
+            "vectorizer": "TF-IDF(max_features=10000, ngram=(1,2))",
         },
-        "results": all_results,
+        "entropy": entropy_history,
+        "random": random_history,
     }
-    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(REPORT_PATH, "w", encoding="utf-8") as f:
-        json.dump(report, f, ensure_ascii=False, indent=2)
-    print(f"\n✅ Results saved → {REPORT_PATH}")
+
+    # Summary
+    e_final = entropy_history[-1]
+    r_final = random_history[-1]
+    print(f"\n{'='*45}")
+    print("RESULTS SUMMARY")
+    print(f"{'='*45}")
+    print(f"Entropy  final F1: {e_final['f1']:.4f} | acc: {e_final['accuracy']:.4f}")
+    print(f"Random   final F1: {r_final['f1']:.4f} | acc: {r_final['accuracy']:.4f}")
+    print(f"Delta F1: {e_final['f1'] - r_final['f1']:+.4f}")
+
+    # Savings: at what labeled size does entropy match random's final F1?
+    random_final_f1 = r_final["f1"]
+    entropy_match = next(
+        (h for h in entropy_history if h["f1"] >= random_final_f1), None
+    )
+    if entropy_match:
+        savings_n = r_final["n_labeled"] - entropy_match["n_labeled"]
+        savings_pct = savings_n / r_final["n_labeled"] * 100
+        print(f"Entropy matches Random final F1 at {entropy_match['n_labeled']} labels "
+              f"(saves {savings_n} = {savings_pct:.1f}%)")
+        results["savings"] = {
+            "entropy_match_at": entropy_match["n_labeled"],
+            "random_final_at": r_final["n_labeled"],
+            "savings_n": savings_n,
+            "savings_pct": round(savings_pct, 1)
+        }
+
+    Path(OUTPUT_PATH).parent.mkdir(parents=True, exist_ok=True)
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+    print(f"\nSaved: {OUTPUT_PATH}")
+    return results
 
 
 if __name__ == "__main__":

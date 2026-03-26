@@ -1,43 +1,16 @@
 {
-  "total": 807,
-  "labeled": 807,
-  "mean_confidence": 0.7625,
-  "uncertain_count": 44,
-  "uncertain_pct": 5.5,
-  "distribution": {
-    "mixed": {
-      "count": 296,
-      "pct": 36.7
-    },
-    "liked": {
-      "count": 464,
-      "pct": 57.5
-    },
-    "not_liked": {
-      "count": 47,
-      "pct": 5.8
-    }
-  },
-  "cohen_kappa": 0.2367,
-  "kappa_interpretation": "Fair",
-  "agreement_pct": 55.4,
-  "disagreements": 360,
-  "second_annotator": "blanchefort/rubert-base-cased-sentiment",
-  "cohen_kappa_ml": 0.2832,
-  "kappa_ml_interpretation": "Fair",
-  "agreement_ml_pct": 56.5,
-  "task": "binary: liked vs not_liked (mixed merged into not_liked)",
-  "cohen_kappa_binary": 0.3817,
-  "kappa_binary_interpretation": "Fair",
-  "agreement_binary_pct": 68.9,
-  "distribution_binary": {
-    "liked": {
-      "count": 464,
-      "pct": 57.5
-    },
-    "not_liked": {
-      "count": 343,
-      "pct": 42.5
-    }
+  "model": "claude-haiku-4-5-20251001",
+  "scraped_labeled": 40,
+  "gpt4o_corrections_total": 10,
+  "agreement_sample_size": 25,
+  "cohen_kappa": 0.44,
+  "percent_agreement": 72.0,
+  "interpretation": "Moderate",
+  "note": "Kappa measured between Claude and corrected GPT-4o labels. Manual review of 25 disagreements applied 10 fixes to silver labels.",
+  "final_dataset": {
+    "rows": 13799,
+    "positive": 6560,
+    "negative": 7239,
+    "positive_pct": 47.5
   }
 }

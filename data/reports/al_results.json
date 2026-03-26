@@ -1,89 +1,367 @@
 {
   "config": {
-    "dataset": "C:\\Users\\denni\\Desktop\\git_repos\\data-for-ml-itmo-2026\\data\\labeled\\strategy_a_labeled.csv",
-    "target": "label_binary",
-    "n_init": 50,
-    "n_iterations": 5,
-    "batch_size": 10,
     "random_state": 42,
-    "test_size": 162
+    "test_size": 0.2,
+    "initial_labeled": 200,
+    "batch_size": 100,
+    "n_iterations": 10,
+    "model": "LogisticRegression",
+    "vectorizer": "TF-IDF(max_features=10000, ngram=(1,2))"
   },
-  "results": {
-    "entropy": [
-      {
-        "iteration": 0,
-        "n_labeled": 50,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      },
-      {
-        "iteration": 1,
-        "n_labeled": 60,
-        "accuracy": 0.5679,
-        "f1": 0.375
-      },
-      {
-        "iteration": 2,
-        "n_labeled": 70,
-        "accuracy": 0.5802,
-        "f1": 0.4045
-      },
-      {
-        "iteration": 3,
-        "n_labeled": 80,
-        "accuracy": 0.6111,
-        "f1": 0.5982
-      },
-      {
-        "iteration": 4,
-        "n_labeled": 90,
-        "accuracy": 0.6296,
-        "f1": 0.5707
-      },
-      {
-        "iteration": 5,
-        "n_labeled": 100,
-        "accuracy": 0.6111,
-        "f1": 0.5516
-      }
-    ],
-    "random": [
-      {
-        "iteration": 0,
-        "n_labeled": 50,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      },
-      {
-        "iteration": 1,
-        "n_labeled": 60,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      },
-      {
-        "iteration": 2,
-        "n_labeled": 70,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      },
-      {
-        "iteration": 3,
-        "n_labeled": 80,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      },
-      {
-        "iteration": 4,
-        "n_labeled": 90,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      },
-      {
-        "iteration": 5,
-        "n_labeled": 100,
-        "accuracy": 0.5741,
-        "f1": 0.3647
-      }
-    ]
-  }
+  "entropy": [
+    {
+      "accuracy": 0.5094,
+      "f1": 0.4609,
+      "confusion_matrix": [
+        [
+          1117,
+          331
+        ],
+        [
+          1023,
+          289
+        ]
+      ],
+      "n_labeled": 200,
+      "iteration": 0
+    },
+    {
+      "accuracy": 0.5011,
+      "f1": 0.4723,
+      "confusion_matrix": [
+        [
+          1014,
+          434
+        ],
+        [
+          943,
+          369
+        ]
+      ],
+      "n_labeled": 300,
+      "iteration": 1
+    },
+    {
+      "accuracy": 0.5065,
+      "f1": 0.4728,
+      "confusion_matrix": [
+        [
+          1048,
+          400
+        ],
+        [
+          962,
+          350
+        ]
+      ],
+      "n_labeled": 400,
+      "iteration": 2
+    },
+    {
+      "accuracy": 0.5047,
+      "f1": 0.4687,
+      "confusion_matrix": [
+        [
+          1056,
+          392
+        ],
+        [
+          975,
+          337
+        ]
+      ],
+      "n_labeled": 500,
+      "iteration": 3
+    },
+    {
+      "accuracy": 0.5043,
+      "f1": 0.4762,
+      "confusion_matrix": [
+        [
+          1016,
+          432
+        ],
+        [
+          936,
+          376
+        ]
+      ],
+      "n_labeled": 600,
+      "iteration": 4
+    },
+    {
+      "accuracy": 0.5004,
+      "f1": 0.4703,
+      "confusion_matrix": [
+        [
+          1019,
+          429
+        ],
+        [
+          950,
+          362
+        ]
+      ],
+      "n_labeled": 700,
+      "iteration": 5
+    },
+    {
+      "accuracy": 0.4967,
+      "f1": 0.4677,
+      "confusion_matrix": [
+        [
+          1008,
+          440
+        ],
+        [
+          949,
+          363
+        ]
+      ],
+      "n_labeled": 800,
+      "iteration": 6
+    },
+    {
+      "accuracy": 0.5051,
+      "f1": 0.4633,
+      "confusion_matrix": [
+        [
+          1082,
+          366
+        ],
+        [
+          1000,
+          312
+        ]
+      ],
+      "n_labeled": 900,
+      "iteration": 7
+    },
+    {
+      "accuracy": 0.5141,
+      "f1": 0.4665,
+      "confusion_matrix": [
+        [
+          1122,
+          326
+        ],
+        [
+          1015,
+          297
+        ]
+      ],
+      "n_labeled": 1000,
+      "iteration": 8
+    },
+    {
+      "accuracy": 0.5112,
+      "f1": 0.4494,
+      "confusion_matrix": [
+        [
+          1168,
+          280
+        ],
+        [
+          1069,
+          243
+        ]
+      ],
+      "n_labeled": 1100,
+      "iteration": 9
+    },
+    {
+      "accuracy": 0.5134,
+      "f1": 0.4539,
+      "confusion_matrix": [
+        [
+          1164,
+          284
+        ],
+        [
+          1059,
+          253
+        ]
+      ],
+      "n_labeled": 1200,
+      "iteration": 10
+    }
+  ],
+  "random": [
+    {
+      "accuracy": 0.5094,
+      "f1": 0.4609,
+      "confusion_matrix": [
+        [
+          1117,
+          331
+        ],
+        [
+          1023,
+          289
+        ]
+      ],
+      "n_labeled": 200,
+      "iteration": 0
+    },
+    {
+      "accuracy": 0.4996,
+      "f1": 0.4957,
+      "confusion_matrix": [
+        [
+          812,
+          636
+        ],
+        [
+          745,
+          567
+        ]
+      ],
+      "n_labeled": 300,
+      "iteration": 1
+    },
+    {
+      "accuracy": 0.5011,
+      "f1": 0.4974,
+      "confusion_matrix": [
+        [
+          809,
+          639
+        ],
+        [
+          738,
+          574
+        ]
+      ],
+      "n_labeled": 400,
+      "iteration": 2
+    },
+    {
+      "accuracy": 0.5029,
+      "f1": 0.4965,
+      "confusion_matrix": [
+        [
+          849,
+          599
+        ],
+        [
+          773,
+          539
+        ]
+      ],
+      "n_labeled": 500,
+      "iteration": 3
+    },
+    {
+      "accuracy": 0.5007,
+      "f1": 0.4951,
+      "confusion_matrix": [
+        [
+          837,
+          611
+        ],
+        [
+          767,
+          545
+        ]
+      ],
+      "n_labeled": 600,
+      "iteration": 4
+    },
+    {
+      "accuracy": 0.5004,
+      "f1": 0.4904,
+      "confusion_matrix": [
+        [
+          883,
+          565
+        ],
+        [
+          814,
+          498
+        ]
+      ],
+      "n_labeled": 700,
+      "iteration": 5
+    },
+    {
+      "accuracy": 0.5036,
+      "f1": 0.5027,
+      "confusion_matrix": [
+        [
+          756,
+          692
+        ],
+        [
+          678,
+          634
+        ]
+      ],
+      "n_labeled": 800,
+      "iteration": 6
+    },
+    {
+      "accuracy": 0.5072,
+      "f1": 0.5072,
+      "confusion_matrix": [
+        [
+          698,
+          750
+        ],
+        [
+          610,
+          702
+        ]
+      ],
+      "n_labeled": 900,
+      "iteration": 7
+    },
+    {
+      "accuracy": 0.5109,
+      "f1": 0.5109,
+      "confusion_matrix": [
+        [
+          703,
+          745
+        ],
+        [
+          605,
+          707
+        ]
+      ],
+      "n_labeled": 1000,
+      "iteration": 8
+    },
+    {
+      "accuracy": 0.5069,
+      "f1": 0.5066,
+      "confusion_matrix": [
+        [
+          732,
+          716
+        ],
+        [
+          645,
+          667
+        ]
+      ],
+      "n_labeled": 1100,
+      "iteration": 9
+    },
+    {
+      "accuracy": 0.5072,
+      "f1": 0.5028,
+      "confusion_matrix": [
+        [
+          831,
+          617
+        ],
+        [
+          743,
+          569
+        ]
+      ],
+      "n_labeled": 1200,
+      "iteration": 10
+    }
+  ]
 }

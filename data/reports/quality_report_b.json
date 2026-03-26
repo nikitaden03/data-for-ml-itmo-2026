@@ -1,0 +1,117 @@
+{
+  "dataset": {
+    "rows": 3895,
+    "cols": 9,
+    "columns": [
+      "title",
+      "body",
+      "date",
+      "source",
+      "sentiment_score",
+      "article_type",
+      "sectors",
+      "tickers",
+      "positive_market_impact"
+    ]
+  },
+  "quality_score": 57,
+  "issues": {
+    "missing": {
+      "sentiment_score": {
+        "count": 40,
+        "pct": 1.03,
+        "severity": "medium"
+      },
+      "article_type": {
+        "count": 40,
+        "pct": 1.03,
+        "severity": "medium"
+      },
+      "sectors": {
+        "count": 40,
+        "pct": 1.03,
+        "severity": "medium"
+      },
+      "tickers": {
+        "count": 40,
+        "pct": 1.03,
+        "severity": "medium"
+      },
+      "positive_market_impact": {
+        "count": 40,
+        "pct": 1.03,
+        "severity": "medium"
+      }
+    },
+    "duplicates": {
+      "exact_duplicates": {
+        "count": 0,
+        "pct": 0.0,
+        "severity": "ok"
+      },
+      "no_title_entries": {
+        "count": 0,
+        "pct": 0.0,
+        "unique_bodies": 0,
+        "severity": "medium",
+        "note": "Telegram-style posts from rdv/t_invest/t_analytic — no title by design"
+      }
+    },
+    "text": {
+      "emoji_in_title": {
+        "count": 0,
+        "pct": 0.0,
+        "severity": "low"
+      },
+      "short_body": {
+        "count": 0,
+        "pct": 0.0,
+        "severity": "low",
+        "threshold": "< 20 chars"
+      },
+      "empty_body": {
+        "count": 0,
+        "pct": 0.0,
+        "severity": "ok"
+      }
+    },
+    "labels": {
+      "missing_labels": {
+        "count": 40,
+        "pct": 1.03,
+        "severity": "medium"
+      },
+      "class_balance": {
+        "distribution": {
+          "1.0": 0.5097,
+          "0.0": 0.4903
+        },
+        "minority_pct": 49.0,
+        "severity": "ok"
+      }
+    },
+    "content": {
+      "advertising_articles": {
+        "count": 0,
+        "pct": 0.0,
+        "severity": "medium",
+        "note": "May add noise to classification task"
+      },
+      "article_type_distribution": {
+        "finance": 3610,
+        "politics": 123,
+        "opinions": 57,
+        "technical analysis": 43,
+        "nan": 40,
+        "others": 22
+      }
+    },
+    "schema": {
+      "sectors_as_string": {
+        "count": 0,
+        "severity": "low",
+        "note": "Stored as string repr of list, needs ast.literal_eval"
+      }
+    }
+  }
+}

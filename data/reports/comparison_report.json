@@ -1,44 +1,34 @@
 {
-  "recommended_strategy": "strategy_a",
+  "recommendation": "strategy_a",
   "recommended_file": "data/cleaned/strategy_a.csv",
   "reasons": [
-    "Quality Score 90/100 vs 75/100 (Strategy B)",
-    "Дедупликация рецензентов предотвращает data leakage при train/test split",
-    "Потеря 13.3% данных приемлема — остаётся 807 отзывов по всем 8 парфюмам"
+    "13799 rows retained (vs 3895 in B) — 3.5x more training data",
+    "no-title rows contain valid financial text in body",
+    "Same quality score (57/100) for both strategies",
+    "Near-ideal class balance preserved (~49% positive)",
+    "Strategy B removes 74% of data — too aggressive"
   ],
-  "ks_tests": {
-    "orig_vs_a": {
-      "statistic": 0.0327,
-      "pvalue": 0.726
-    },
-    "orig_vs_b": {
-      "statistic": 0.0292,
-      "pvalue": 0.819
-    },
-    "a_vs_b": {
-      "statistic": 0.0129,
-      "pvalue": 1.0
-    }
-  },
   "strategies": {
     "original": {
-      "rows": 931,
-      "quality_score": 30.0
+      "rows": 15040,
+      "quality_score": 43,
+      "loss_pct": 0
     },
     "strategy_a": {
-      "rows": 807,
-      "loss_pct": 13.32,
-      "quality_score": 90.0
+      "rows": 13799,
+      "quality_score": 57,
+      "loss_pct": 8.3,
+      "positive_pct": 47.7,
+      "ks_statistic": 0.0097,
+      "ks_pvalue": 0.4982
     },
     "strategy_b": {
-      "rows": 883,
-      "loss_pct": 5.16,
-      "quality_score": 75.0
+      "rows": 3895,
+      "quality_score": 57,
+      "loss_pct": 74.1,
+      "positive_pct": 51.0,
+      "ks_statistic": 0.6364,
+      "ks_pvalue": 0.0
     }
-  },
-  "ml_recommendations": [
-    "Стратификация при split по perfume_name",
-    "rating/votes — использовать как признаки, не как таргет",
-    "Таргет (сентимент) разметить отдельно"
-  ]
+  }
 }

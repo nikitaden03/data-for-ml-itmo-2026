@@ -1,42 +1,118 @@
 {
-  "quality_score": 30.0,
-  "n_rows": 931,
-  "n_cols": 10,
-  "total_penalty": 70.0,
-  "issues": [
-    {
-      "type": "encoding_corruption",
-      "severity": "critical",
-      "count": 21,
-      "pct": 2.26,
-      "description": "Текст отзыва содержит символы замены Unicode (\\ufffd) — данные нечитаемы для NLP",
-      "penalty": 30
+  "dataset": {
+    "rows": 15040,
+    "cols": 9,
+    "columns": [
+      "title",
+      "body",
+      "date",
+      "source",
+      "sentiment_score",
+      "article_type",
+      "sectors",
+      "tickers",
+      "positive_market_impact"
+    ]
+  },
+  "quality_score": 43,
+  "issues": {
+    "missing": {
+      "sentiment_score": {
+        "count": 40,
+        "pct": 0.27,
+        "severity": "medium"
+      },
+      "article_type": {
+        "count": 40,
+        "pct": 0.27,
+        "severity": "medium"
+      },
+      "sectors": {
+        "count": 40,
+        "pct": 0.27,
+        "severity": "medium"
+      },
+      "tickers": {
+        "count": 40,
+        "pct": 0.27,
+        "severity": "medium"
+      },
+      "positive_market_impact": {
+        "count": 40,
+        "pct": 0.27,
+        "severity": "medium"
+      }
     },
-    {
-      "type": "short_review",
-      "severity": "medium",
-      "count": 27,
-      "pct": 2.9,
-      "description": "Отзыв слишком короткий (<50 символов) — мало информации для NLP",
-      "penalty": 15
+    "duplicates": {
+      "exact_duplicates": {
+        "count": 2,
+        "pct": 0.01,
+        "severity": "high"
+      },
+      "no_title_entries": {
+        "count": 11021,
+        "pct": 73.28,
+        "unique_bodies": 10473,
+        "severity": "medium",
+        "note": "Telegram-style posts from rdv/t_invest/t_analytic — no title by design"
+      }
     },
-    {
-      "type": "duplicate_reviewer",
-      "severity": "high",
-      "count": 151,
-      "pct": 16.22,
-      "description": "Один рецензент оставил несколько отзывов — риск утечки данных при train/test split",
-      "penalty": 15
+    "text": {
+      "emoji_in_title": {
+        "count": 5,
+        "pct": 0.03,
+        "severity": "low"
+      },
+      "short_body": {
+        "count": 29,
+        "pct": 0.19,
+        "severity": "medium",
+        "threshold": "< 20 chars"
+      },
+      "empty_body": {
+        "count": 0,
+        "pct": 0.0,
+        "severity": "ok"
+      }
     },
-    {
-      "type": "perfume_level_rating",
-      "severity": "high",
-      "count": 8,
-      "pct": 100.0,
-      "description": "'rating' — агрегат уровня парфюма, а не оценка отдельного отзыва; прямое использование как таргета приведёт к утечке",
-      "penalty": 10.0
+    "labels": {
+      "missing_labels": {
+        "count": 40,
+        "pct": 0.27,
+        "severity": "medium"
+      },
+      "class_balance": {
+        "distribution": {
+          "0.0": 0.5099,
+          "1.0": 0.4901
+        },
+        "minority_pct": 49.0,
+        "severity": "ok"
+      }
+    },
+    "content": {
+      "advertising_articles": {
+        "count": 1213,
+        "pct": 8.07,
+        "severity": "medium",
+        "note": "May add noise to classification task"
+      },
+      "article_type_distribution": {
+        "finance": 11653,
+        "advertising": 1213,
+        "opinions": 691,
+        "technical analysis": 596,
+        "politics": 466,
+        "others": 381,
+        "nan": 40
+      }
+    },
+    "schema": {
+      "sectors_as_string": {
+        "count": 0,
+        "severity": "low",
+        "note": "Stored as string repr of list, needs ast.literal_eval"
+      }
     }
-  ],
-  "source_file": "data/processed/perfumes_merged.csv",
-  "task": "sentiment_classification"
+  }
 }
